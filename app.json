@@ -1,0 +1,12 @@
+{
+  "name": "RKFinance",
+  "displayName": "RKFinance",
+  "expo": {
+    "name": "RKFinance",
+    "slug": "RKFinance",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
