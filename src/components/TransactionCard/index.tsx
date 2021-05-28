@@ -16,16 +16,16 @@ interface Category {
   icon: string
 }
 
-interface Data {
-  type: 'income' | 'outcome' | 'total',
+export interface TransactionCardProps {
+  type: 'positive' | 'negative' ,
   amount: string
   title: string
   category: Category
   date: string
 }
 
-interface TransactionCardProps {
-  data: Data
+interface Props {
+  data: TransactionCardProps
 }
 
 
@@ -34,7 +34,7 @@ const icon = {
   outcome: 'arrow-down-circle',
 }
 
-export function TransactionCard({ data }: TransactionCardProps) {
+export function TransactionCard({ data }: Props) {
   return (
     <Container>
       <Title>
@@ -42,12 +42,12 @@ export function TransactionCard({ data }: TransactionCardProps) {
       </Title>
 
       <Amount typeColor={data.type}>
-        {data.amount}
+        {data.type === 'negative' && '-'} {data.amount}
       </Amount>
 
       <Footer>
         <Category>
-          <Icon name="dollar-sign" />
+          <Icon name={data.category.icon} />
           <CategoryName>
             {data.category.name}
           </CategoryName>

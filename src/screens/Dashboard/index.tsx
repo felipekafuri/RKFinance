@@ -1,8 +1,7 @@
 import React from 'react'
-import { getBottomSpace } from 'react-native-iphone-x-helper'
 
 import { HighlightCard } from '../../components/HighlightCard'
-import { TransactionCard } from '../../components/TransactionCard'
+import { TransactionCard, TransactionCardProps } from '../../components/TransactionCard'
 import {
   Container,
   Greetings,
@@ -19,37 +18,37 @@ import {
   UserWrapper
 } from './styles'
 
-interface Data {
-  type: 'income' | 'outcome' | 'total',
-  amount: string
-  title: string
-  category: { name: string, icon: string },
-  date: string
+export interface DataListProps extends TransactionCardProps {
+  id: string
 }
 
 export function Dashboard() {
-  const data = [{
-    type: "income",
-    amount: "R$ 16.400,00",
-    title: "Desenvolvimento de sites",
-    category: { name: 'Vendas', icon: "dollar-sign" },
-    date: "30/06/2021"
-  },
-  {
-    type: "income",
-    amount: "R$ 16.400,00",
-    title: "Desenvolvimento de sites",
-    category: { name: 'Vendas', icon: "dollar-sign" },
-    date: "30/06/2021"
-  },
-  {
-    type: "income",
-    amount: "R$ 16.400,00",
-    title: "Desenvolvimento de sites",
-    category: { name: 'Vendas', icon: "dollar-sign" },
-    date: "30/06/2021"
-  }
-] as Data[]
+  const data: DataListProps[] = [
+    {
+      id: '1',
+      type: "positive",
+      amount: "R$ 16.400,00",
+      title: "Desenvolvimento de sites",
+      category: { name: 'Vendas', icon: "dollar-sign" },
+      date: "30/06/2021"
+    },
+    {
+      id: '2',
+      type: "negative",
+      amount: "R$ 8.000,00",
+      title: "Compra de moto elétrica",
+      category: { name: 'Vendas', icon: "dollar-sign" },
+      date: "30/06/2021"
+    },
+    {
+      id: '3',
+      type: "negative",
+      amount: "R$ 90,00",
+      title: "Pizza",
+      category: { name: 'Vendas', icon: "coffee" },
+      date: "30/06/2021"
+    }
+  ]
 
   return (
     <Container>
@@ -95,19 +94,10 @@ export function Dashboard() {
         </Title>
 
         <TransactionList
-          showsVerticalScrollIndicator={false}
           data={data}
-          renderItem={({ item }) =>
-            <TransactionCard
-              data={item}
-            />
-          }
-          contentContainerStyle={{
-            paddingBottom: getBottomSpace()
-          }}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => <TransactionCard data={item} />}
         />
-
-
       </Transactions>
     </Container>
   )
