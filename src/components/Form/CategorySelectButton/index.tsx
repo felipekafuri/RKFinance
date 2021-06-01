@@ -1,5 +1,4 @@
 import React from 'react';
-import { TouchableOpacityProps } from 'react-native';
 import { 
   Container, 
   Category, 
@@ -8,11 +7,12 @@ import {
 
 interface Props{
   title: string
+  onPress:() =>void
 }
 
-export function CategorySelect({ title, ...rest }:Props){
+export function CategorySelectButton({ title, onPress }:Props){
   return(
-    <Container {...rest}>
+    <Container onPress={onPress} activeOpacity={0.5}>
       <Category>
         {title}
       </Category>

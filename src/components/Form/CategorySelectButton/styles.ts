@@ -3,9 +3,7 @@ import { Feather } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 
-export const Container = styled(TouchableOpacity).attrs({
-  activeOpacity: 0.7
-})`
+export const Container = styled(TouchableOpacity)`
   background-color: ${({theme})=> theme.colors.shape};
   flex-direction: row;
 
