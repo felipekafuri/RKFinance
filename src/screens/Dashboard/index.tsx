@@ -1,7 +1,12 @@
-import React from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useFocusEffect } from '@react-navigation/core'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import { HighlightCard } from '../../components/HighlightCard'
-import { TransactionCard, TransactionCardProps } from '../../components/TransactionCard'
+import {
+  TransactionCard,
+  TransactionCardProps
+} from '../../components/TransactionCard'
 import {
   Container,
   Greetings,
@@ -15,55 +20,80 @@ import {
   UserAvatar,
   UserInfo,
   UserName,
-  UserWrapper
+  UserWrapper,
+  LogoutButton
 } from './styles'
 
-export interface DataListProps extends TransactionCardProps {
-  id: string
-}
+const dataKey = '@rkfinance:transactions'
 
 export function Dashboard() {
-  const data: DataListProps[] = [
-    {
-      id: '1',
-      type: "positive",
-      amount: "R$ 16.400,00",
-      title: "Desenvolvimento de sites",
-      category: { name: 'Vendas', icon: "dollar-sign" },
-      date: "30/06/2021"
-    },
-    {
-      id: '2',
-      type: "negative",
-      amount: "R$ 8.000,00",
-      title: "Compra de moto elétrica",
-      category: { name: 'Vendas', icon: "dollar-sign" },
-      date: "30/06/2021"
-    },
-    {
-      id: '3',
-      type: "negative",
-      amount: "R$ 90,00",
-      title: "Pizza",
-      category: { name: 'Vendas', icon: "coffee" },
-      date: "30/06/2021"
-    }
-  ]
+  const [transactions, setTransactions] = useState<TransactionCardProps[]>([])
+
+  async function loadTransactions() {
+    const response = await AsyncStorage.getItem(dataKey)
+    const transactions = response ? JSON.parse(response) : []
+
+    const transactionsFormatted: TransactionCardProps[] = transactions.map(
+      (transaction: TransactionCardProps) => {
+        const amount = Number(transaction.amount).toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL'
+        })
+
+        const date = Intl.DateTimeFormat('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: '2-digit'
+        }).format(new Date(transaction.date))
+
+        return {
+          id: transaction.id,
+          name: transaction.name,
+          type: transaction.type,
+          category: transaction.category,
+          amount,
+          date
+        }
+      }
+    )
+
+    setTransactions(transactionsFormatted)
+  }
+
+  useEffect(() => {
+    loadTransactions()
+  }, [])
+
+  useFocusEffect(
+    useCallback(() => {
+      loadTransactions()
+    }, [])
+  )
 
   return (
     <Container>
-
       <Header>
         <UserWrapper>
           <UserInfo>
-            <UserAvatar source={{ uri: 'https://xesque.rocketseat.dev/users/avatar/profile-3919b117-7689-4d8f-aeaa-1a82581c5fd2.jpg' }} />
+            <UserAvatar
+              source={{
+                uri:
+                  'https://xesque.rocketseat.dev/users/avatar/profile-3919b117-7689-4d8f-aeaa-1a82581c5fd2.jpg'
+              }}
+            />
 
             <Greetings>
               <GreetingText>Olá,</GreetingText>
               <UserName>Felipe</UserName>
             </Greetings>
           </UserInfo>
-          <Icon name="power" />
+          <LogoutButton
+            onPress={() => {
+              console.log('saiu')
+            }}
+          >
+            <Icon name="power" />
+          </LogoutButton>
         </UserWrapper>
       </Header>
 
@@ -89,12 +119,10 @@ export function Dashboard() {
       </HighlightCards>
 
       <Transactions>
-        <Title>
-          Listagem
-        </Title>
+        <Title>Listagem</Title>
 
         <TransactionList
-          data={data}
+          data={transactions}
           keyExtractor={item => item.id}
           renderItem={({ item }) => <TransactionCard data={item} />}
         />
