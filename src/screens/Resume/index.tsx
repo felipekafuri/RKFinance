@@ -161,7 +161,8 @@ export function Resume() {
                     fill: theme.colors.shape
                   }
                 }}
-                labelRadius={65}
+                innerRadius={54}
+                labelRadius={100}
               />
             </ChartContainer>
             {totalCategories.map(category => (
