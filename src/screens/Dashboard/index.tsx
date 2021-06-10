@@ -9,6 +9,7 @@ import {
   TransactionCard,
   TransactionCardProps
 } from '../../components/TransactionCard'
+import { useAuth } from '../../hooks/auth'
 import {
   Container,
   Greetings,
@@ -27,8 +28,6 @@ import {
   LoadContainer
 } from './styles'
 
-const dataKey = '@rkfinance:transactions'
-
 interface HighlightProps {
   amount: string
   lastTransaction: string
@@ -41,21 +40,31 @@ interface HighlightData {
 }
 
 export function Dashboard() {
+  const { user, signOut } = useAuth()
+
   const [isLoading, setIsLoading] = useState(true)
   const [transactions, setTransactions] = useState<TransactionCardProps[]>([])
   const [highlight, setHighlight] = useState<HighlightData>({} as HighlightData)
 
   const theme = useTheme()
+  const dataKey = `@rkfinance:transactions_user:${user.id}`
 
   function getLastTransactionDate(
     collection: TransactionCardProps[],
     type: 'income' | 'outcome'
   ) {
+    const collectionFiltered = collection.filter(
+      transaction => transaction.type === type
+    )
+    if (collectionFiltered.length === 0) {
+      return '0'
+    }
+
     const lastTransactions = new Date(
       Math.max(
-        ...collection
-          .filter(transaction => transaction.type === type)
-          .map(transaction => new Date(transaction.date).getTime())
+        ...collectionFiltered.map(transaction =>
+          new Date(transaction.date).getTime()
+        )
       )
     )
 
@@ -110,7 +119,10 @@ export function Dashboard() {
       'outcome'
     )
 
-    const totalInterval = `01 a ${lastTransactionOutcome}`
+    const totalInterval =
+      lastTransactionOutcome === '0'
+        ? 'Não há transações'
+        : `01 a ${lastTransactionOutcome}`
 
     setHighlight({
       incomes: {
@@ -138,10 +150,6 @@ export function Dashboard() {
     setIsLoading(false)
   }
 
-  useEffect(() => {
-    loadTransactions()
-  }, [])
-
   useFocusEffect(
     useCallback(() => {
       loadTransactions()
@@ -161,19 +169,18 @@ export function Dashboard() {
               <UserInfo>
                 <UserAvatar
                   source={{
-                    uri:
-                      'https://xesque.rocketseat.dev/users/avatar/profile-3919b117-7689-4d8f-aeaa-1a82581c5fd2.jpg'
+                    uri: user.photo
                   }}
                 />
 
                 <Greetings>
                   <GreetingText>Olá,</GreetingText>
-                  <UserName>Felipe</UserName>
+                  <UserName>{user.name}</UserName>
                 </Greetings>
               </UserInfo>
               <LogoutButton
                 onPress={() => {
-                  console.log('saiu')
+                  signOut()
                 }}
               >
                 <Icon name="power" />
@@ -186,13 +193,21 @@ export function Dashboard() {
               type="income"
               title="Entradas"
               amount={highlight.incomes.amount}
-              lastTransaction={`Última entrada dia ${highlight.incomes.lastTransaction} `}
+              lastTransaction={
+                highlight.incomes.lastTransaction === '0'
+                  ? 'Não há transações'
+                  : `Última entrada dia ${highlight.incomes.lastTransaction}`
+              }
             />
             <HighlightCard
               type="outcome"
               title="Saídas"
               amount={highlight.outcomes.amount}
-              lastTransaction={`Última saída dia ${highlight.outcomes.lastTransaction}`}
+              lastTransaction={
+                highlight.outcomes.lastTransaction === '0'
+                  ? 'Não há transações'
+                  : `Última entrada dia ${highlight.incomes.lastTransaction}`
+              }
             />
             <HighlightCard
               type="total"

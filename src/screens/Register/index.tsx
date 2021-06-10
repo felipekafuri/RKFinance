@@ -12,6 +12,7 @@ import { Button } from '../../components/Form/Button'
 import { CategorySelectButton } from '../../components/Form/CategorySelectButton'
 import { InputForm } from '../../components/Form/InputForm'
 import { TransactionTypeButton } from '../../components/Form/TransactionTypeButton'
+import { useAuth } from '../../hooks/auth'
 import { CategorySelect } from '../CategorySelect'
 import {
   Container,
@@ -36,15 +37,17 @@ const schema = yup.object().shape({
     .required('O valor é obrigatório.')
 })
 
-const dataKey = '@rkfinance:transactions'
-
 export function Register() {
+  const { user } = useAuth()
+
   const [transactionType, setTransactionType] = useState('')
   const [categoryModalOpen, setCategoryModalOpen] = useState(false)
   const [category, setCategory] = useState({
     key: 'category',
     name: 'Categoria'
   })
+
+  const dataKey = `@rkfinance:transactions_user:${user.id}`
 
   const { navigate } = useNavigation()
 

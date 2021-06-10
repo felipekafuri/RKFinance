@@ -23,6 +23,7 @@ import {
   LoadContainer
 } from './styles'
 import { ActivityIndicator } from 'react-native'
+import { useAuth } from '../../hooks/auth'
 
 interface TransactionData {
   id: string
@@ -43,6 +44,8 @@ interface CategoryData {
 }
 
 export function Resume() {
+  const { user } = useAuth()
+
   const [totalCategories, setTotalCategories] = useState<CategoryData[]>([])
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [isLoading, setIsLoading] = useState(false)
@@ -62,7 +65,7 @@ export function Resume() {
   }
 
   const loadData = useCallback(async () => {
-    const dataKey = '@rkfinance:transactions'
+    const dataKey = `@rkfinance:transactions_user:${user.id}`
     const response = await AsyncStorage.getItem(dataKey)
     const responseFormatted = response ? JSON.parse(response) : []
 
@@ -110,7 +113,7 @@ export function Resume() {
     })
 
     setTotalCategories(totalByCategory)
-  }, [selectedDate])
+  }, [selectedDate, user.id])
 
   useFocusEffect(
     useCallback(() => {
