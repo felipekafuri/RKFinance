@@ -79,19 +79,18 @@ function AuthProvider({ children }: AuthProviderProps): JSX.Element {
 
   async function signInWithApple() {
     try {
-      const creadentials = await AppleAuthentication.signInAsync({
+      const credential = await AppleAuthentication.signInAsync({
         requestedScopes: [
           AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
           AppleAuthentication.AppleAuthenticationScope.EMAIL
         ]
       })
-
-      if (creadentials) {
+      if (credential) {
         const userLogged = {
-          id: String(creadentials.user),
-          email: creadentials.email!,
-          name: creadentials.fullName!.givenName!,
-          photo: `https://ui-avatars.com/api/?name=${creadentials.fullName!
+          id: String(credential.user),
+          email: credential.email!,
+          name: credential.fullName!.givenName!,
+          photo: `https://ui-avatars.com/api/?name=${credential.fullName!
             .givenName!}`
         }
         await AsyncStorage.setItem(userStorageKey, JSON.stringify(userLogged))
@@ -100,6 +99,7 @@ function AuthProvider({ children }: AuthProviderProps): JSX.Element {
         return
       }
     } catch (error) {
+      console.log(error)
       throw new Error(error)
     }
   }
