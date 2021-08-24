@@ -151,6 +151,7 @@ export function Register() {
             <CategorySelectButton
               title={category.name}
               onPress={handleOpenSelectCategoryModal}
+              testID="button-modal-category"
             />
           </Fields>
           <Button
@@ -160,7 +161,11 @@ export function Register() {
           />
         </Form>
 
-        <Modal visible={categoryModalOpen} animationType="slide">
+        <Modal
+          testID="modal-category"
+          visible={categoryModalOpen}
+          animationType="slide"
+        >
           <CategorySelect
             category={category}
             closeSelectCategory={handleCloseSelectCategoryModal}

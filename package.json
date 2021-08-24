@@ -15,7 +15,6 @@
     "@react-navigation/bottom-tabs": "^5.11.11",
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.5",
-    "@testing-library/jest-native": "^4.0.2",
     "date-fns": "^2.22.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "expo": "~41.0.1",
@@ -47,6 +46,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
+    "@testing-library/jest-native": "^4.0.2",
     "@testing-library/react-hooks": "^7.0.1",
     "@testing-library/react-native": "^7.2.0",
     "@types/jest": "^27.0.1",
@@ -65,11 +65,11 @@
     "eslint-plugin-prettier": "3.3.1",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-react": "^7.24.0",
-    "jest-expo": "^42.1.0",
     "jest-styled-components": "^7.0.5",
     "prettier": "2.2.1",
     "ts-jest": "^27.0.5",
-    "typescript": "~4.0.0"
+    "typescript": "~4.0.0",
+    "jest-expo": "^41.0.0"
   },
   "private": true
 }

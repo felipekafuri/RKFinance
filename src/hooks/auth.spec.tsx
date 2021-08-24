@@ -10,6 +10,7 @@ jest.mock('expo-apple-authentication')
 
 // Global variable that will be typed as RenderResult with the returned type of the hook
 let hookResult: RenderResult<ReturnType<typeof useAuth>>
+let googleMocked: any
 
 describe('Auth Hook', () => {
   beforeEach(() => {
@@ -17,11 +18,11 @@ describe('Auth Hook', () => {
       wrapper: AuthProvider
     })
     hookResult = result
+    googleMocked = mocked(logInAsync as any)
   })
 
   it('Should be able to sign in with a existing Google account', async () => {
-    const googleMocked = mocked(logInAsync as any)
-    googleMocked.mockReturnValue({
+    googleMocked.mockReturnValueOnce({
       type: 'success',
       accessToken: 'accessToken',
       idToken: 'idToken',
@@ -38,8 +39,7 @@ describe('Auth Hook', () => {
   })
 
   it('Should not connect if cancel authentication with Google', async () => {
-    const googleMocked = mocked(logInAsync as any)
-    googleMocked.mockReturnValue({
+    googleMocked.mockReturnValueOnce({
       type: 'canceled'
     })
 
@@ -49,7 +49,7 @@ describe('Auth Hook', () => {
 
   it('should be able to sign in with a existing apple account', async () => {
     const appleMocked = mocked(signInAsync as any)
-    appleMocked.mockReturnValue({
+    appleMocked.mockReturnValueOnce({
       user: 'userId',
       email: 'jihuuja@ve.gg',
       fullName: {
